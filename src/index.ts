@@ -154,7 +154,7 @@ async function runDecreer(message: Message, chatChannel: TextChannel, decreeChan
     const users = Array.from(new Set(messages.filter((x) => !x.author.bot).map((x) => x.author.id)));
 
     let newKing: GuildMember | null = null;
-    while (newKing === null) {
+    while (newKing === null || newKing?.id === currentKing?.id) {
         newKing = await message.guild!.members.fetch(randomElement(users)).catch(() => null);
         if (!newKing) logger.info(`King could not be fetched, retrying...`);
         else logger.info(`New king is now ${newKing.user.tag} (${newKing.user.id})`);
