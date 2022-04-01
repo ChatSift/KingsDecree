@@ -203,8 +203,7 @@ export const decrees: {
         execute: async (chatChannel, interaction, ctx) => {
             const randomMeme = randomElement(memes);
             await chatChannel.send({
-                content: `<@&${process.env.EVENT_ROLE}> DING DONG.`,
-                attachments: [new MessageAttachment(randomMeme, "meme")],
+                content: `<@&${process.env.EVENT_ROLE}> DING DONG ${randomMeme}`
             });
             return interaction.channel?.send(`The king has decreed that you shall all now be pinged.`);
         },
