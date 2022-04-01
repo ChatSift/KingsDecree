@@ -70,13 +70,13 @@ export const decrees: {
         type: "epic",
         execute: async (chatChannel, interaction, ctx) => {
             const newChannelName = randomElement(channelNameChoices);
-            await interaction.channel?.send(`The king has decreed that the channel name shall now be: \`${newChannelName}\``);
             try {
                 await chatChannel.setName(newChannelName);
             } catch (e) {
-                interaction.reply({ ephemeral: true, content: `There was an error setting the slowmode. Please forward this to staff: ${e}` });
+                interaction.reply({ ephemeral: true, content: `There was an error setting the channel name. Please forward this to staff: ${e}` });
                 return ctx.logger.error(`Could not set name to ${newChannelName}. ${e}`);
             }
+            await interaction.channel?.send(`The king has decreed that the channel name shall now be: \`${newChannelName}\``);
             ctx.logger.info(`Set the channel name to ${newChannelName}`);
             return setTimeout(() => chatChannel.setName("town-square"), ctx.currentRotationTime);
         },
@@ -96,8 +96,7 @@ export const decrees: {
             ctx.logger.info(`Setting guild banner to ${newBanner}`);
             await interaction.channel
                 ?.send({
-                    content: `The king has now decreed that the new server banner shall be: `,
-                    attachments: [new MessageAttachment(newBanner, "new-server-banner")],
+                    content: `The king has now decreed that the new server banner shall be: ${newBanner}`,
                 })
                 .catch(() => null);
             return setTimeout(
@@ -124,8 +123,7 @@ export const decrees: {
             ctx.logger.info(`Setting guild banner to ${newIcon}`);
             await interaction.channel
                 ?.send({
-                    content: `The king has now decreed that the new server icon shall be: `,
-                    attachments: [new MessageAttachment(newIcon, "new-server-icon")],
+                    content: `The king has now decreed that the new server icon shall be: ${newIcon}`,
                 })
                 .catch(() => null);
             return setTimeout(
