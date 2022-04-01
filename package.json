@@ -6,7 +6,8 @@
     "scripts": {
         "prettier": "npx prettier --write **/*.{ts,js,json,yml,yaml,md}",
         "build": "npx tsc",
-        "dev": "nodemon"
+        "dev": "npx nodemon",
+        "prod": "yarn build && pm2 start ./dist/index.js --name king"
     },
     "dependencies": {
         "@discordjs/builders": "0.13.0-dev.1648515278-ac4bc3a",
