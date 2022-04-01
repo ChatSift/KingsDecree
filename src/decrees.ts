@@ -231,12 +231,12 @@ export const decrees: {
             }
             ctx.logger.info(`Timed out member ${targetMember.user.tag} (${targetMember.user.id})`);
             await chatChannel.send(randomElement(timeoutMemberMessages).replace("{{ user }}", targetMember.toString()));
-            return interaction.channel?.send(`The king has decreed that ${targetMember} shall be timed out for 5 minutes.`);
+            return interaction.channel?.send(`The king has decreed that ${targetMember}.`);
         },
     },
     {
         name: "TIMEOUT_LAST_SPEAK",
-        description: "Timeout the last person to speak in the chat for 5 minutes",
+        description: "Timeout the last person to speak in the chat",
         type: "epic",
         execute: async (chatChannel, interaction, ctx) => {
             const messages = await chatChannel.messages.fetch({ limit: 50 });
