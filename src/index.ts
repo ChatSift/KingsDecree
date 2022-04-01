@@ -151,7 +151,7 @@ async function runDecreer(message: Message, chatChannel: TextChannel, decreeChan
     if (!messages.size) {
         return logger.info("No messages in the channel, nani??");
     }
-    const users = Array.from(new Set(messages.map((x) => x.author.id)));
+    const users = Array.from(new Set(messages.filter((x) => !x.author.bot).map((x) => x.author.id)));
 
     let newKing: GuildMember | null = null;
     while (newKing === null) {

@@ -83,14 +83,10 @@ export const decrees: {
     },
     {
         name: "RANDOM_BANNER",
-        description: "Set the server banner to a random banner from a list of pre-chosen ones",
+        description: "Mess with server banner",
         type: "legendary",
         execute: async (chatChannel, interaction, ctx) => {
             const newBanner = randomElement(serverBanners);
-            await interaction.channel?.send({
-                content: `The king has now decreed that the new server banner shall be: `,
-                attachments: [new MessageAttachment(newBanner, "new-server-banner")],
-            });
             try {
                 await chatChannel.guild.setBanner(newBanner);
             } catch (e) {
@@ -98,6 +94,12 @@ export const decrees: {
                 return ctx.logger.error(`There was an error setting the guild banner to ${newBanner}. ${e}`);
             }
             ctx.logger.info(`Setting guild banner to ${newBanner}`);
+            await interaction.channel
+                ?.send({
+                    content: `The king has now decreed that the new server banner shall be: `,
+                    attachments: [new MessageAttachment(newBanner, "new-server-banner")],
+                })
+                .catch(() => null);
             return setTimeout(
                 () =>
                     chatChannel.guild
@@ -109,7 +111,7 @@ export const decrees: {
     },
     {
         name: "RANDOM_ICON",
-        description: "Set the server icon to a random icon from a list of pre-chosen ones",
+        description: "Mess with the server icon",
         type: "legendary",
         execute: async (chatChannel, interaction, ctx) => {
             const newIcon = randomElement(serverIcons);
@@ -120,10 +122,12 @@ export const decrees: {
                 return ctx.logger.error(`There was an error setting the guild icon to ${newIcon}. ${e}`);
             }
             ctx.logger.info(`Setting guild banner to ${newIcon}`);
-            await interaction.channel?.send({
-                content: `The king has now decreed that the new server icon shall be: `,
-                attachments: [new MessageAttachment(newIcon, "new-server-icon")],
-            });
+            await interaction.channel
+                ?.send({
+                    content: `The king has now decreed that the new server icon shall be: `,
+                    attachments: [new MessageAttachment(newIcon, "new-server-icon")],
+                })
+                .catch(() => null);
             return setTimeout(
                 () =>
                     chatChannel.guild.setIcon("https://cdn.discordapp.com/icons/414234792121597953/a_2a3520d5af0df04d7b3b766fa6f2f570.webp?size=128"),
@@ -255,7 +259,7 @@ export const decrees: {
             }
             ctx.logger.info(`Successfully timed out ${targetMember.id}`);
             await chatChannel.send(randomElement(timeoutMemberMessages).replace("{{ user }}", targetMember.toString()));
-            return interaction.channel?.send(`The king has decreed that ${targetMember} shall be timed out for 5 minutes.`);
+            return interaction.channel?.send(`The king has decreed that ${targetMember} shall be timed out.`);
         },
     },
     {
