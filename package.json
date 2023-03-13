@@ -18,7 +18,7 @@
     },
     "dependencies": {
         "common-tags": "^1.8.2",
-        "discord.js": "^14.7.1",
+        "discord.js": "^14.8.0",
         "dotenv": "^16.0.3",
         "winston": "^3.8.2"
     },
@@ -26,11 +26,11 @@
         "@commitlint/cli": "^17.4.4",
         "@commitlint/config-angular": "^17.4.4",
         "@types/common-tags": "^1.8.1",
-        "@types/node": "^18.14.6",
-        "@typescript-eslint/eslint-plugin": "^5.54.1",
-        "@typescript-eslint/parser": "^5.54.1",
-        "dotenv-cli": "^7.0.0",
-        "eslint": "^8.35.0",
+        "@types/node": "^18.15.2",
+        "@typescript-eslint/eslint-plugin": "^5.55.0",
+        "@typescript-eslint/parser": "^5.55.0",
+        "dotenv-cli": "^7.1.0",
+        "eslint": "^8.36.0",
         "eslint-config-neon": "^0.1.40",
         "eslint-plugin-typescript-sort-keys": "^2.1.0",
         "husky": "^8.0.3",
@@ -38,7 +38,7 @@
         "prettier": "^2.8.4",
         "prettier-eslint": "^15.0.1",
         "rimraf": "^4.4.0",
-        "typescript": "next"
+        "typescript": "^5.1.0-dev.20230313"
     },
     "husky": {
         "hooks": {

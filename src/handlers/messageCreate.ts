@@ -1,7 +1,6 @@
 import { env } from "node:process";
 import { setInterval, clearInterval } from "node:timers";
-import type { Message, TextChannel } from "discord.js";
-import { client } from "..";
+import type { Message } from "discord.js";
 import { KingsDecree } from "../KingsDecree";
 
 export const messageCreate = async (message: Message) => {
@@ -14,9 +13,6 @@ export const messageCreate = async (message: Message) => {
 	}
 
 	const [command, arg] = message.content.slice(env.PREFIX!.length).split(' ');
-
-	const chatChannel = client.channels.cache.get(env.CHAT_CHANNEL) as TextChannel;
-	const decreeChannel = client.channels.cache.get(env.DECREE_CHANNEL) as TextChannel;
 	switch (command) {
 		case 'start_rotation': {
 			if (!arg) {

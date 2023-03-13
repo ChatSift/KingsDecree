@@ -1,3 +1,5 @@
+import type { TextChannel, StringSelectMenuInteraction } from "discord.js";
+
 export const channelNameChoices = [
 	'Beanroom',
 	'Gateway',
@@ -55,3 +57,34 @@ export const timeoutMemberMessages = [
 	'{{ user }} lost in a game of hide & seek',
 	'Call an ambulance {{ user }}, but not for me!',
 ];
+
+export enum DecreeName {
+	BanRandomLetter = 'BAN_RANDOM_LETTER',
+	BanSpecificWords = 'BAN_SPECIFIC_WORDS',
+	KickLastSpeak = 'KICK_LAST_SPEAK',
+	MustContainWord = 'MUST_CONTAIN_WORD',
+	PingRole = 'PING_ROLE',
+	RandomBanner = 'RANDOM_BANNER',
+	RandomIcon = 'RANDOM_ICON',
+	RenameChannel = 'RENAME_CHANNEL',
+	SlowmodeChannel = 'SLOWMODE_CHANNEL',
+	TimeoutLastSpeak = 'TIMEOUT_LAST_SPEAK',
+	TimeoutRandomUser = 'TIMEOUT_RANDOM_USER',
+	ToggleImages = 'TOGGLE_IMAGES'
+}
+
+export enum DecreeRarity {
+	Common = 'common',
+	Epic = 'epic',
+	Legendary = 'legendary',
+	Rare = 'rare'
+}
+
+export type Decree = {
+	description: string;
+	execute(
+		chatChannel: TextChannel,
+		interaction: StringSelectMenuInteraction): Promise<any>;
+	name: DecreeName;
+	rarity: DecreeRarity;
+};

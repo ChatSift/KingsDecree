@@ -2,9 +2,9 @@ import { EventEmitter } from "node:events";
 import { env } from "node:process";
 import { setTimeout } from "node:timers";
 import { stripIndents } from "common-tags";
-import { ActionRowBuilder, Colors, StringSelectMenuBuilder, type GuildMember, type Message, type TextChannel, type Guild } from "discord.js";
-import { commonDecrees, epicDecrees, legendaryDecrees, rareDecrees, type Decree } from "./decrees";
-import { randomElement } from "./util";
+import { ActionRowBuilder, Colors, StringSelectMenuBuilder, type GuildMember, type TextChannel, type Guild } from "discord.js";
+import { DecreeRarity, type Decree } from "./constants";
+import { commonDecrees, epicDecrees, legendaryDecrees, randomElement, rareDecrees } from "./util";
 import { client, logger } from ".";
 
 export class KingsDecree extends EventEmitter {
@@ -52,7 +52,7 @@ export class KingsDecree extends EventEmitter {
       }
     }
   
-    if (!Array.from(newDecrees).some((x) => x.type === 'common')) {
+    if (!Array.from(newDecrees).some((x) => x.rarity === DecreeRarity.Common)) {
       newDecrees.delete(Array.from(newDecrees)[2] as Decree);
       newDecrees.add(randomElement(commonDecrees));
     }
@@ -78,7 +78,7 @@ export class KingsDecree extends EventEmitter {
                   ${newKing} is now the new king.
                   Here are your decree choices:
   
-                  ${KingsDecree.decrees.map((x) => `**[${x.type}]** \`${x.description}\``).join('\n')}
+                  ${KingsDecree.decrees.map((x) => `**[${x.rarity}]** \`${x.description}\``).join('\n')}
                   `,
           color: Colors.Gold,
         },
@@ -104,7 +104,7 @@ export class KingsDecree extends EventEmitter {
           logger.error('couldn\'t edit message for ran out timer', error);
         }
         },
-      KingsDecree.rotationTime ?? 5 * 60 * 1_000,
+      KingsDecree.rotationTime!,
     );
   }
 

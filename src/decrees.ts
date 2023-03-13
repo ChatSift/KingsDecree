@@ -11,6 +11,9 @@ import {
 	serverBanners,
 	banWords,
 	mustContainWords,
+	DecreeName,
+	type Decree,
+	DecreeRarity,
 } from './constants';
 import { randomElement } from './util';
 import { logger, client } from '.';
@@ -19,9 +22,9 @@ const alphabet = 'abcdefghijklmnopqrstuvwxyz';
 
 export const decrees: Decree[] = [
 	{
-		name: 'SLOWMODE_CHANNEL',
+		name: DecreeName.SlowmodeChannel,
 		description: 'Turn on a slowmode of a random amount of seconds on the chat',
-		type: 'rare',
+		rarity: DecreeRarity.Rare,
 		execute: async (chatChannel, interaction) => {
 			const newSlowmode = Math.floor(Math.random() * (120 - 10 + 1) + 10);
 			try {
@@ -42,9 +45,9 @@ export const decrees: Decree[] = [
 		},
 	},
 	{
-		name: 'TOGGLE_IMAGES',
+		name: DecreeName.ToggleImages,
 		description: 'Restrict images in the chat',
-		type: 'common',
+		rarity: DecreeRarity.Common,
 		execute: async (chatChannel, interaction) => {
 			try {
 				await chatChannel.permissionOverwrites.create(env.EVENT_ROLE, {
@@ -74,9 +77,9 @@ export const decrees: Decree[] = [
 		},
 	},
 	{
-		name: 'RENAME_CHANNEL',
+		name: DecreeName.RenameChannel,
 		description: 'Rename the channel from a list of pre-chosen names',
-		type: 'epic',
+		rarity: DecreeRarity.Epic,
 		execute: async (chatChannel, interaction) => {
 			const newChannelName = randomElement(channelNameChoices);
 			try {
@@ -95,9 +98,9 @@ export const decrees: Decree[] = [
 		},
 	},
 	{
-		name: 'RANDOM_BANNER',
+		name: DecreeName.RandomBanner,
 		description: 'Mess with server banner',
-		type: 'legendary',
+		rarity: DecreeRarity.Legendary,
 		execute: async (chatChannel, interaction) => {
 			const newBanner = randomElement(serverBanners);
 			try {
@@ -127,9 +130,9 @@ export const decrees: Decree[] = [
 		},
 	},
 	{
-		name: 'RANDOM_ICON',
+		name: DecreeName.RandomIcon,
 		description: 'Mess with the server icon',
-		type: 'legendary',
+		rarity: DecreeRarity.Legendary,
 		execute: async (chatChannel, interaction) => {
 			const newIcon = randomElement(serverIcons);
 			try {
@@ -157,9 +160,9 @@ export const decrees: Decree[] = [
 		},
 	},
 	{
-		name: 'BAN_RANDOM_LETTER',
+		name: DecreeName.BanRandomLetter,
 		description: 'Ban a random letter',
-		type: 'legendary',
+		rarity: DecreeRarity.Legendary,
 		execute: async (chatChannel, interaction) => {
 			const newBannedLetter = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
 			const bannedLetterMessageListener = (message: Message) => {
@@ -181,9 +184,9 @@ export const decrees: Decree[] = [
 		},
 	},
 	{
-		name: 'BAN_SPECIFIC_WORDS',
+		name: DecreeName.BanSpecificWords,
 		description: 'Ban a random word',
-		type: 'epic',
+		rarity: DecreeRarity.Epic,
 		execute: async (chatChannel, interaction) => {
 			const newBannedWord = randomElement(banWords);
 			const bannedWordMessageListener = (message: Message) => {
@@ -205,9 +208,9 @@ export const decrees: Decree[] = [
 		},
 	},
 	{
-		name: 'MUST_CONTAIN_WORD',
+		name: DecreeName.MustContainWord,
 		description: 'All messages must contain a randomly decided word',
-		type: 'rare',
+		rarity: DecreeRarity.Rare,
 		execute: async (chatChannel, interaction) => {
 			const newMustContainWord = randomElement(mustContainWords);
 			const mustContainWordListener = (message: Message) => {
@@ -230,9 +233,9 @@ export const decrees: Decree[] = [
 		},
 	},
 	{
-		name: 'PING_ROLE',
+		name: DecreeName.PingRole,
 		description: 'Ping the @April Fools role, we do a little trolling',
-		type: 'legendary',
+		rarity: DecreeRarity.Legendary,
 		execute: async (chatChannel, interaction) => {
 			const randomMeme = randomElement(memes);
 			await chatChannel.send({
@@ -242,9 +245,9 @@ export const decrees: Decree[] = [
 		},
 	},
 	{
-		name: 'TIMEOUT_RANDOM_USER',
+		name: DecreeName.TimeoutRandomUser,
 		description: 'Timeout a random user',
-		type: 'epic',
+		rarity: DecreeRarity.Epic,
 		execute: async (chatChannel, interaction) => {
 			const messages = await chatChannel.messages.fetch({ limit: 50 });
 			const users = Array.from(new Set(messages.map((x) => x.author.id)));
@@ -276,9 +279,9 @@ export const decrees: Decree[] = [
 		},
 	},
 	{
-		name: 'TIMEOUT_LAST_SPEAK',
+		name: DecreeName.TimeoutLastSpeak,
 		description: 'Timeout the last person to speak in the chat',
-		type: 'epic',
+		rarity: DecreeRarity.Epic,
 		execute: async (chatChannel, interaction) => {
 			const messages = await chatChannel.messages.fetch({ limit: 50 });
 			const targetMember = await chatChannel.guild!.members.fetch(messages.first()!.author.id).catch(() => null);
@@ -306,9 +309,9 @@ export const decrees: Decree[] = [
 		},
 	},
 	{
-		name: 'KICK_LAST_SPEAK',
+		name: DecreeName.KickLastSpeak,
 		description: 'Kick the last person to speak',
-		type: 'epic',
+		rarity: DecreeRarity.Epic,
 		execute: async (chatChannel, interaction) => {
 			const messages = await chatChannel.messages.fetch({ limit: 50 });
 			const users = Array.from(new Set(messages.map((x) => x.author.id)));
@@ -334,16 +337,3 @@ export const decrees: Decree[] = [
 		},
 	},
 ];
-
-export const commonDecrees = decrees.filter((x) => x.type === 'common');
-export const rareDecrees = decrees.filter((x) => x.type === 'rare');
-export const epicDecrees = decrees.filter((x) => x.type === 'epic');
-export const legendaryDecrees = decrees.filter((x) => x.type === 'legendary');
-export type Decree = {
-	description: string;
-	execute(
-		chatChannel: TextChannel,
-		interaction: StringSelectMenuInteraction): Promise<any>;
-	name: string;
-	type: 'common' | 'epic' | 'legendary' | 'rare';
-};

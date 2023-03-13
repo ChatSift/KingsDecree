@@ -1,16 +1,10 @@
 import 'dotenv/config';
 
 import { env } from 'node:process';
-import { setTimeout, clearInterval, setInterval } from 'node:timers';
-import { stripIndents } from 'common-tags';
-import { Client, ActionRowBuilder, StringSelectMenuBuilder, GatewayIntentBits, type GuildMember, type Message, type TextChannel, Colors } from 'discord.js';
+import { Client, GatewayIntentBits } from 'discord.js';
 import winston from 'winston';
-import { KingsDecree } from './KingsDecree';
-import type { Decree } from './decrees';
-import { epicDecrees, rareDecrees, commonDecrees, legendaryDecrees, decrees } from './decrees';
 import { interactionCreate } from './handlers/interactionCreate';
 import { messageCreate } from './handlers/messageCreate';
-import { randomElement } from './util';
 
 for (const key of [
 	'DISCORD_TOKEN',
