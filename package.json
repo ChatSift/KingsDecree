@@ -2,7 +2,8 @@
     "name": "@chatsift/kingsdecree",
     "packageManager": "yarn@3.2.1",
     "version": "1.0.0",
-    "main": "./dist/src/index.js",
+    "main": "./dist/index.js",
+    "type": "module",
     "license": "MIT",
     "workspaces": [
         "src"
@@ -12,7 +13,7 @@
         "build": "tsc",
         "dev-build": "tsc --watch",
         "format": "prettier --write src/*.{ts,json}",
-        "start": "dotenv -e .env -- node --es-module-specifier-resolution=node --enable-source-maps ./src/dist/index.js",
+        "start": "dotenv -e .env -- node --es-module-specifier-resolution=node --enable-source-maps ./dist/index.js",
         "prepare": "is-ci || husky install",
         "update": "yarn upgrade-interactive"
     },

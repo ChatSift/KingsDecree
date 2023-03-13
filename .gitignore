@@ -12,6 +12,7 @@ dist
 !.yarn/versions
 .pnp.*
 logs
+*.log
 
 .turbo
 

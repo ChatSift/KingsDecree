@@ -1,7 +1,7 @@
 /* eslint-disable promise/prefer-await-to-then */
 import { env } from 'node:process';
 import { setTimeout } from 'node:timers';
-import type { GuildMember, Message, StringSelectMenuInteraction, TextChannel } from 'discord.js';
+import { Events, type GuildMember, type Message, type StringSelectMenuInteraction, type TextChannel } from 'discord.js';
 import { KingsDecree } from './KingsDecree';
 import {
 	channelNameChoices,
@@ -176,10 +176,10 @@ export const decrees: Decree[] = [
 				}
 			};
 
-			client.on('messageCreate', bannedLetterMessageListener);
+			client.on(Events.MessageCreate, bannedLetterMessageListener);
 			await KingsDecree.getDecreeChannel().send(`The king has decreed that the letter \`${newBannedLetter}\` is now banned.`);
 			return setTimeout(() => {
-				client.removeListener('messageCreate', bannedLetterMessageListener);
+				client.removeListener(Events.MessageCreate, bannedLetterMessageListener);
 			}, KingsDecree.rotationTime as number);
 		},
 	},
@@ -200,10 +200,10 @@ export const decrees: Decree[] = [
 				}
 			};
 
-			client.on('messageCreate', bannedWordMessageListener);
+			client.on(Events.MessageCreate, bannedWordMessageListener);
 			await KingsDecree.getDecreeChannel().send(`The king has decreed that the word \`${newBannedWord}\` is now banned.`);
 			return setTimeout(() => {
-				client.removeListener('messageCreate', bannedWordMessageListener);
+				client.removeListener(Events.MessageCreate, bannedWordMessageListener);
 			}, KingsDecree.rotationTime as number);
 		},
 	},
@@ -223,12 +223,12 @@ export const decrees: Decree[] = [
 				}
 			};
 
-			client.on('messageCreate', mustContainWordListener);
+			client.on(Events.MessageCreate, mustContainWordListener);
 			await KingsDecree.getDecreeChannel().send(
 				`The king has decreed that the word \`${newMustContainWord}\` is required to be in every message.`,
 			);
 			return setTimeout(() => {
-				client.removeListener('messageCreate', mustContainWordListener);
+				client.removeListener(Events.MessageCreate, mustContainWordListener);
 			}, KingsDecree.rotationTime as number);
 		},
 	},

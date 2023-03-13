@@ -7,12 +7,13 @@ export const messageCreate = async (message: Message) => {
 	if (message.author.bot || !message.guild || !message.member || !message.content.startsWith(env.PREFIX)) {
 		return;
 	}
-
+	
 	if (!message.member.roles.cache.has(env.STAFF_ROLE)) {
 		return;
 	}
 
 	const [command, arg] = message.content.slice(env.PREFIX!.length).split(' ');
+
 	switch (command) {
 		case 'start_rotation': {
 			if (!arg) {
@@ -21,14 +22,13 @@ export const messageCreate = async (message: Message) => {
 			}
 
 			const time = Number.parseInt(arg, 10);
+			KingsDecree.rotationTime = time * 1_000 * 60;
 			await message.reply(
 				`Alright boss. Will crown the next king now. Will rotate every ${time} minutes (${time * 1_000 * 60} ms)`,
 			);
 			await KingsDecree.runDecreer();
 			// eslint-disable-next-line require-atomic-updates
 			KingsDecree.interval = setInterval(async () => KingsDecree.runDecreer(), time * 1_000 * 60);
-			// eslint-disable-next-line require-atomic-updates
-			KingsDecree.rotationTime = time * 1_000 * 60;
 			break;
 		}
 

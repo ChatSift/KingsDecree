@@ -37,6 +37,7 @@ export class KingsDecree extends EventEmitter {
       }
     }
   
+    // eslint-disable-next-line require-atomic-updates
     KingsDecree.king = newKing;
     const newDecrees: Set<Decree> = new Set();
     for (let decree = 0; newDecrees.size < 3; decree++) {
@@ -57,6 +58,7 @@ export class KingsDecree extends EventEmitter {
       newDecrees.add(randomElement(commonDecrees));
     }
   
+    // eslint-disable-next-line require-atomic-updates
     KingsDecree.decrees = Array.from(newDecrees);
   
     const msg = await KingsDecree.getDecreeChannel().send({

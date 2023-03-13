@@ -1,7 +1,7 @@
 import 'dotenv/config';
 
 import { env } from 'node:process';
-import { Client, GatewayIntentBits } from 'discord.js';
+import { Client, Events, GatewayIntentBits } from 'discord.js';
 import winston from 'winston';
 import { interactionCreate } from './handlers/interactionCreate';
 import { messageCreate } from './handlers/messageCreate';
@@ -24,6 +24,7 @@ export const client = new Client({
 		GatewayIntentBits.Guilds,
 		GatewayIntentBits.GuildMembers,
 		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.MessageContent,
 		GatewayIntentBits.GuildMessageReactions,
 		GatewayIntentBits.GuildEmojisAndStickers,
 		GatewayIntentBits.GuildIntegrations,
@@ -55,8 +56,8 @@ client.on('ready', () => {
 	logger.info(`Logged in as ${client.user!.tag}`);
 });
 
-client.on('interactionCreate', interactionCreate);
+client.on(Events.InteractionCreate, interactionCreate);
 
-client.on('messageCreate', messageCreate);
+client.on(Events.MessageCreate, messageCreate);
 
 await client.login(env.DISCORD_TOKEN);
