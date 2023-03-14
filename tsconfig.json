@@ -19,8 +19,7 @@
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
 		"noImplicitOverride": true,
-		"verbatimModuleSyntax": true,
-		
+		"importsNotUsedAsValues": "error"
 	},
 	"exclude": ["./**/__tests__", "./dist"]
 }
