@@ -1,7 +1,9 @@
 /* eslint-disable promise/prefer-await-to-then */
+import { Buffer } from 'node:buffer';
 import { env } from 'node:process';
 import { setTimeout } from 'node:timers';
-import { Events, type GuildMember, type Message, type StringSelectMenuInteraction, type TextChannel } from 'discord.js';
+import { Events, type GuildMember, type Message } from 'discord.js';
+import { request } from 'undici';
 import { KingsDecree } from './KingsDecree';
 import {
 	channelNameChoices,
@@ -14,7 +16,17 @@ import {
 	DecreeName,
 	type Decree,
 	DecreeRarity,
+	randomEmoji,
+	GameModifiableDataName,
 } from './constants';
+import {
+	allLowercaseListener,
+	allUppercaseListener,
+	bannedLetterListener,
+	bannedWordListener,
+	mustContainEmojiListener,
+	mustContainWordListener,
+} from './decree-listeners';
 import { randomElement } from './util';
 import { logger, client } from '.';
 
@@ -41,7 +53,10 @@ export const decrees: Decree[] = [
 			await KingsDecree.getDecreeChannel().send(
 				`The king has decreed, the chat shall now have a slowmode of ${newSlowmode} seconds.`,
 			);
-			return setTimeout(async () => chatChannel.setRateLimitPerUser(0).catch(() => {}), KingsDecree.rotationTime as number);
+			return setTimeout(
+				async () => chatChannel.setRateLimitPerUser(0).catch(() => {}),
+				KingsDecree.rotationTime as number,
+			);
 		},
 	},
 	{
@@ -51,17 +66,15 @@ export const decrees: Decree[] = [
 		execute: async (chatChannel, interaction) => {
 			try {
 				await chatChannel.permissionOverwrites.create(env.EVENT_ROLE, {
-					"AttachFiles": false,
-					"EmbedLinks": false,
+					AttachFiles: false,
+					EmbedLinks: false,
 				});
 			} catch (error) {
 				await interaction.reply({
 					ephemeral: true,
 					content: `There was an error setting the permissions. Please forward this to staff: ${error}`,
 				});
-				return logger.error(
-					`Could not set permission overwrite for chat channel. Role ${env.EVENT_ROLE}. ${error}`,
-				);
+				return logger.error(`Could not set permission overwrite for chat channel. Role ${env.EVENT_ROLE}. ${error}`);
 			}
 
 			logger.info('Restricted image send perms in chat channel.');
@@ -69,8 +82,8 @@ export const decrees: Decree[] = [
 			return setTimeout(
 				async () =>
 					chatChannel.permissionOverwrites.create(env.EVENT_ROLE, {
-						"AttachFiles": true,
-						"EmbedLinks": true,
+						AttachFiles: true,
+						EmbedLinks: true,
 					}),
 				KingsDecree.rotationTime as number,
 			);
@@ -81,6 +94,10 @@ export const decrees: Decree[] = [
 		description: 'Rename the channel from a list of pre-chosen names',
 		rarity: DecreeRarity.Epic,
 		execute: async (chatChannel, interaction) => {
+			if (KingsDecree.originalData[GameModifiableDataName.ChannelName] === '') {
+				KingsDecree.originalData[GameModifiableDataName.ChannelName] = chatChannel.name;
+			}
+
 			const newChannelName = randomElement(channelNameChoices);
 			try {
 				await chatChannel.setName(newChannelName);
@@ -92,9 +109,14 @@ export const decrees: Decree[] = [
 				return logger.error(`Could not set name to ${newChannelName}. ${error}`);
 			}
 
-			await KingsDecree.getDecreeChannel().send(`The king has decreed that the channel name shall now be: \`${newChannelName}\``);
+			await KingsDecree.getDecreeChannel().send(
+				`The king has decreed that the channel name shall now be: \`${newChannelName}\``,
+			);
 			logger.info(`Set the channel name to ${newChannelName}`);
-			return setTimeout(async () => chatChannel.setName('town-square'), KingsDecree.rotationTime as number);
+			return setTimeout(
+				async () => chatChannel.setName(KingsDecree.originalData[GameModifiableDataName.ChannelName]),
+				KingsDecree.rotationTime as number,
+			);
 		},
 	},
 	{
@@ -102,6 +124,15 @@ export const decrees: Decree[] = [
 		description: 'Mess with server banner',
 		rarity: DecreeRarity.Legendary,
 		execute: async (chatChannel, interaction) => {
+			if (KingsDecree.originalData[GameModifiableDataName.GuildBanner].byteLength === 0) {
+				const originalBanner = chatChannel.guild.bannerURL({ size: 4_096, extension: 'png' });
+				if (originalBanner) {
+					const originalBannerBuffer = await request(originalBanner).then(async (res) => res.body.arrayBuffer());
+					// eslint-disable-next-line require-atomic-updates
+					KingsDecree.originalData[GameModifiableDataName.GuildBanner] = Buffer.from(originalBannerBuffer);
+				}
+			}
+
 			const newBanner = randomElement(serverBanners);
 			try {
 				await chatChannel.guild.setBanner(newBanner);
@@ -114,17 +145,14 @@ export const decrees: Decree[] = [
 			}
 
 			logger.info(`Setting guild banner to ${newBanner}`);
-			await KingsDecree.getDecreeChannel().send({
+			await KingsDecree.getDecreeChannel()
+				.send({
 					content: `The king has now decreed that the new server banner shall be: ${newBanner}`,
 				})
 				.catch(() => null);
 			return setTimeout(
 				async () =>
-					chatChannel.guild
-						.setBanner(
-							'https://cdn.discordapp.com/banners/414234792121597953/a_a326cc40a40903be15d1b3f08d8e4c5c.webp?size=300',
-						)
-						.catch(() => null),
+					chatChannel.guild.setBanner(KingsDecree.originalData[GameModifiableDataName.GuildBanner]).catch(() => null),
 				KingsDecree.rotationTime as number,
 			);
 		},
@@ -134,6 +162,15 @@ export const decrees: Decree[] = [
 		description: 'Mess with the server icon',
 		rarity: DecreeRarity.Legendary,
 		execute: async (chatChannel, interaction) => {
+			if (KingsDecree.originalData[GameModifiableDataName.GuildIcon].byteLength === 0) {
+				const originalIcon = chatChannel.guild.iconURL({ size: 4_096, extension: 'png' });
+				if (originalIcon) {
+					const originalIconBuffer = await request(originalIcon).then(async (res) => res.body.arrayBuffer());
+					// eslint-disable-next-line require-atomic-updates
+					KingsDecree.originalData[GameModifiableDataName.GuildIcon] = Buffer.from(originalIconBuffer);
+				}
+			}
+
 			const newIcon = randomElement(serverIcons);
 			try {
 				await chatChannel.guild.setIcon(newIcon);
@@ -146,15 +183,13 @@ export const decrees: Decree[] = [
 			}
 
 			logger.info(`Setting guild banner to ${newIcon}`);
-			await KingsDecree.getDecreeChannel().send({
+			await KingsDecree.getDecreeChannel()
+				.send({
 					content: `The king has now decreed that the new server icon shall be: ${newIcon}`,
 				})
 				.catch(() => null);
 			return setTimeout(
-				async () =>
-					chatChannel.guild.setIcon(
-						'https://cdn.discordapp.com/icons/414234792121597953/a_2a3520d5af0df04d7b3b766fa6f2f570.webp?size=128',
-					),
+				async () => chatChannel.guild.setIcon(KingsDecree.originalData[GameModifiableDataName.GuildIcon]),
 				KingsDecree.rotationTime as number,
 			);
 		},
@@ -165,45 +200,29 @@ export const decrees: Decree[] = [
 		rarity: DecreeRarity.Legendary,
 		execute: async (chatChannel, interaction) => {
 			const newBannedLetter = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-			const bannedLetterMessageListener = (message: Message) => {
-				if (message.author.bot || message.channel.id !== env.CHAT_CHANNEL) {
-					return;
-				}
 
-				if (message.content.toLowerCase().includes(newBannedLetter)) {
-					message.delete().catch(() => {});
-					
-				}
-			};
-
-			client.on(Events.MessageCreate, bannedLetterMessageListener);
-			await KingsDecree.getDecreeChannel().send(`The king has decreed that the letter \`${newBannedLetter}\` is now banned.`);
+			client.on(Events.MessageCreate, (message) => bannedLetterListener(message, newBannedLetter));
+			await KingsDecree.getDecreeChannel().send(
+				`The king has decreed that the letter \`${newBannedLetter}\` is now banned.`,
+			);
 			return setTimeout(() => {
-				client.removeListener(Events.MessageCreate, bannedLetterMessageListener);
+				client.removeListener(Events.MessageCreate, bannedLetterListener);
 			}, KingsDecree.rotationTime as number);
 		},
 	},
 	{
-		name: DecreeName.BanSpecificWords,
+		name: DecreeName.BanRandomWord,
 		description: 'Ban a random word',
 		rarity: DecreeRarity.Epic,
 		execute: async (chatChannel, interaction) => {
 			const newBannedWord = randomElement(banWords);
-			const bannedWordMessageListener = (message: Message) => {
-				if (message.author.bot || message.channel.id !== env.CHAT_CHANNEL) {
-					return;
-				}
 
-				if (message.content.toLowerCase().includes(newBannedWord)) {
-					message.delete().catch(() => {});
-					
-				}
-			};
-
-			client.on(Events.MessageCreate, bannedWordMessageListener);
-			await KingsDecree.getDecreeChannel().send(`The king has decreed that the word \`${newBannedWord}\` is now banned.`);
+			client.on(Events.MessageCreate, (message: Message) => bannedWordListener(message, newBannedWord));
+			await KingsDecree.getDecreeChannel().send(
+				`The king has decreed that the word \`${newBannedWord}\` is now banned.`,
+			);
 			return setTimeout(() => {
-				client.removeListener(Events.MessageCreate, bannedWordMessageListener);
+				client.removeListener(Events.MessageCreate, bannedWordListener);
 			}, KingsDecree.rotationTime as number);
 		},
 	},
@@ -213,22 +232,29 @@ export const decrees: Decree[] = [
 		rarity: DecreeRarity.Rare,
 		execute: async (chatChannel, interaction) => {
 			const newMustContainWord = randomElement(mustContainWords);
-			const mustContainWordListener = (message: Message) => {
-				if (message.author.bot || message.channel.id !== env.CHAT_CHANNEL) {
-					return;
-				}
 
-				if (!message.content.toLowerCase().includes(newMustContainWord)) {
-					message.delete().catch(() => {});
-				}
-			};
-
-			client.on(Events.MessageCreate, mustContainWordListener);
+			client.on(Events.MessageCreate, (message: Message) => mustContainWordListener(message, newMustContainWord));
 			await KingsDecree.getDecreeChannel().send(
 				`The king has decreed that the word \`${newMustContainWord}\` is required to be in every message.`,
 			);
 			return setTimeout(() => {
 				client.removeListener(Events.MessageCreate, mustContainWordListener);
+			}, KingsDecree.rotationTime as number);
+		},
+	},
+	{
+		name: DecreeName.MustContainEmoji,
+		description: 'All messages must contain a randomly decided emoji',
+		rarity: DecreeRarity.Rare,
+		execute: async (chatChannel, interaction) => {
+			const newMustContainEmoji = randomEmoji(interaction.guild!);
+
+			client.on(Events.MessageCreate, (message: Message) => mustContainEmojiListener(message, newMustContainEmoji));
+			await KingsDecree.getDecreeChannel().send(
+				`The king has decreed that the emoji \`${newMustContainEmoji}\` is required to be in every message.`,
+			);
+			return setTimeout(() => {
+				client.removeListener(Events.MessageCreate, mustContainEmojiListener);
 			}, KingsDecree.rotationTime as number);
 		},
 	},
@@ -317,7 +343,9 @@ export const decrees: Decree[] = [
 			const users = Array.from(new Set(messages.map((x) => x.author.id)));
 			const targetMember = await chatChannel.guild!.members.fetch(randomElement(users)).catch(() => null);
 			if (!targetMember) {
-				return KingsDecree.getDecreeChannel().send('Oh no! The last person to speak has left before I could kick them, so sad!');
+				return KingsDecree.getDecreeChannel().send(
+					'Oh no! The last person to speak has left before I could kick them, so sad!',
+				);
 			}
 
 			try {
@@ -327,13 +355,35 @@ export const decrees: Decree[] = [
 					ephemeral: true,
 					content: `Unable to kick last person to speak. Please forward this to staff ${error}`,
 				});
-				return logger.error(
-					`There was an error kicking ${targetMember.user.id} (${targetMember.user.tag}). ${error}`,
-				);
+				return logger.error(`There was an error kicking ${targetMember.user.id} (${targetMember.user.tag}). ${error}`);
 			}
 
 			logger.info(`Successfully kicked ${targetMember.user.id} (${targetMember.user.tag})`);
 			return KingsDecree.getDecreeChannel().send(`The king has decreed that ${targetMember} shall be **kicked**.`);
+		},
+	},
+	{
+		name: DecreeName.AllLowercase,
+		description: 'All messages must be in lowercase',
+		rarity: DecreeRarity.Rare,
+		execute: async (chatChannel, interaction) => {
+			client.on(Events.MessageCreate, allLowercaseListener);
+			await KingsDecree.getDecreeChannel().send('The king has decreed that all messages must be in lowercase.');
+			return setTimeout(() => {
+				client.removeListener(Events.MessageCreate, allLowercaseListener);
+			}, KingsDecree.rotationTime as number);
+		},
+	},
+	{
+		name: DecreeName.AllUppercase,
+		description: 'All messages must be in uppercase',
+		rarity: DecreeRarity.Rare,
+		execute: async (chatChannel, interaction) => {
+			client.on(Events.MessageCreate, allUppercaseListener);
+			await KingsDecree.getDecreeChannel().send('The king has decreed that all messages must be in uppercase.');
+			return setTimeout(() => {
+				client.removeListener(Events.MessageCreate, allUppercaseListener);
+			}, KingsDecree.rotationTime as number);
 		},
 	},
 ];

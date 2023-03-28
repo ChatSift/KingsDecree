@@ -1,5 +1,5 @@
-import { DecreeRarity } from "./constants";
-import { decrees } from "./decrees";
+import { DecreeRarity } from './constants';
+import { decrees } from './decrees';
 
 export const randomElement = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)] as T;
 

@@ -1,4 +1,5 @@
-import type { TextChannel, StringSelectMenuInteraction } from "discord.js";
+import type { Buffer } from 'node:buffer';
+import type { TextChannel, StringSelectMenuInteraction, Guild, Collection } from 'discord.js';
 
 export const channelNameChoices = [
 	'Beanroom',
@@ -46,6 +47,8 @@ export const banWords = ['hello', 'welcome', 'help', 'what', 'starfish', 'are', 
 
 export const mustContainWords = ['potato', 'quarantine', 'sano', 'alien', 'kaboom'];
 
+export const randomEmoji = (guild: Guild) => guild.emojis.cache.random()!.toString();
+
 export const memes = [''];
 
 export const timeoutMemberMessages = [
@@ -59,9 +62,12 @@ export const timeoutMemberMessages = [
 ];
 
 export enum DecreeName {
+	AllLowercase = 'ALL_LOWERCASE',
+	AllUppercase = 'ALL_UPPERCASE',
 	BanRandomLetter = 'BAN_RANDOM_LETTER',
-	BanSpecificWords = 'BAN_SPECIFIC_WORDS',
+	BanRandomWord = 'BAN_SPECIFIC_WORDS',
 	KickLastSpeak = 'KICK_LAST_SPEAK',
+	MustContainEmoji = 'MUST_CONTAIN_EMOJI',
 	MustContainWord = 'MUST_CONTAIN_WORD',
 	PingRole = 'PING_ROLE',
 	RandomBanner = 'RANDOM_BANNER',
@@ -70,21 +76,31 @@ export enum DecreeName {
 	SlowmodeChannel = 'SLOWMODE_CHANNEL',
 	TimeoutLastSpeak = 'TIMEOUT_LAST_SPEAK',
 	TimeoutRandomUser = 'TIMEOUT_RANDOM_USER',
-	ToggleImages = 'TOGGLE_IMAGES'
+	ToggleImages = 'TOGGLE_IMAGES',
 }
 
 export enum DecreeRarity {
 	Common = 'common',
 	Epic = 'epic',
 	Legendary = 'legendary',
-	Rare = 'rare'
+	Rare = 'rare',
 }
 
 export type Decree = {
 	description: string;
-	execute(
-		chatChannel: TextChannel,
-		interaction: StringSelectMenuInteraction): Promise<any>;
+	execute(chatChannel: TextChannel, interaction: StringSelectMenuInteraction): Promise<any>;
 	name: DecreeName;
 	rarity: DecreeRarity;
+};
+
+export enum GameModifiableDataName {
+	ChannelName = 'channelName',
+	GuildBanner = 'guildBanner',
+	GuildIcon = 'guildIcon',
+}
+
+export type GameModifiableDataRecord = {
+	[GameModifiableDataName.ChannelName]: string;
+	[GameModifiableDataName.GuildBanner]: Buffer;
+	[GameModifiableDataName.GuildIcon]: Buffer;
 };
