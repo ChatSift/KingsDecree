@@ -9,7 +9,6 @@ import {
 	type GuildMember,
 	type TextChannel,
 	type Guild,
-	Collection,
 } from 'discord.js';
 import type { GameModifiableDataRecord } from './constants';
 import { DecreeRarity, type Decree } from './constants';

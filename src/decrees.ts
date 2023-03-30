@@ -269,9 +269,9 @@ export const decrees: Decree[] = [
 		description: 'Ping the @April Fools role, we do a little trolling',
 		rarity: DecreeRarity.Legendary,
 		execute: async (chatChannel, interaction) => {
-			const randomMeme = randomElement(memes);
+			const randomMeme = randomElement(memes).replace('{{ role }}', `<@&${env.EVENT_ROLE}>`);
 			await chatChannel.send({
-				content: `<@&${env.EVENT_ROLE}> DING DONG ${randomMeme}`,
+				content: randomMeme,
 			});
 			return KingsDecree.getDecreeChannel().send(`The king has decreed that you shall all now be pinged.`);
 		},

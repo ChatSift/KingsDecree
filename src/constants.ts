@@ -56,7 +56,19 @@ export const mustContainWords = ['potato', 'quarantine', 'sano', 'alien', 'kaboo
 
 export const randomEmoji = (guild: Guild) => guild.emojis.cache.random()!.toString();
 
-export const memes = [''];
+export const memes = [
+	'Never going give {{ role }} up, never gonna let you down',
+	'My [F25] husband [M26] used all our savings and sold our house for primogems, how do I financially recover from this {{ role }}',
+	'Oh my god is that a Genshin Impact reference {{ role }}???',
+	'Genshin fact time {{ role }}! Did you know making exactly 33 Sausages will cost exactly 99 raw meat and take exactly 39600 seconds?',
+	'Did you see the news about Megamind being added to Genshin {{ role }}?',
+	'Hey {{ role }}! In three weeks the next Cars movie is going to debut featuring Paimon racing Lightning McQueen!',
+	'{{ role }} Did you know Jyk has spent over $3000 on Genshin Impact?',
+	`Me eating lunch: oke
+Alarm blaring
+Looks out window
+Absolutel chaos`,
+];
 
 export const timeoutMemberMessages = [
 	'{{ user }} has been timed out',
