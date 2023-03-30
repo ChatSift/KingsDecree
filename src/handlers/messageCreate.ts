@@ -32,6 +32,18 @@ export const messageCreate = async (message: Message) => {
 			break;
 		}
 
+		case 'stop_rotation': {
+			if (!KingsDecree.interval) {
+				await message.reply('There is no rotation to stop.');
+				return;
+			}
+
+			clearInterval(KingsDecree.interval);
+
+			await message.reply('Alright boss. Will stop rotating kings.');
+			break;
+		}
+
 		case 'set_king': {
 			if (!arg) {
 				await message.reply('You must specify the new person you want to be king.');
