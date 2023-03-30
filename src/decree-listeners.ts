@@ -61,3 +61,17 @@ export const mustContainEmojiListener = (message: Message, newMustContainEmoji: 
 		message.delete().catch(() => {});
 	}
 };
+
+export const genshinImpactStansAssembleListener = (message: Message, randomCharacterName: string) => {
+	if (message.author.bot || message.channel.id !== env.CHAT_CHANNEL) {
+		return;
+	}
+
+	if (message.member?.nickname !== randomCharacterName) {
+		message.member?.setNickname(randomCharacterName).catch(() => {});
+	}
+
+	if (!message.content.toLowerCase().includes(randomCharacterName)) {
+		message.delete().catch(() => {});
+	}
+};

@@ -1,5 +1,5 @@
 import type { Buffer } from 'node:buffer';
-import type { TextChannel, StringSelectMenuInteraction, Guild, Collection } from 'discord.js';
+import type { TextChannel, StringSelectMenuInteraction, Guild } from 'discord.js';
 
 export const channelNameChoices = [
 	'Beanroom',
@@ -14,17 +14,23 @@ export const channelNameChoices = [
 	'Minecraft',
 	'School',
 	'HelpImTrappedInTheChannelEditor',
-	'Uwu',
-	'Owo',
+	'uwu',
+	'owo',
 	'Goodbye',
+	'Mondstadt',
+	'Liyue',
+	'Inazuma',
+	'Sumeru',
+	'DairyQueen',
+	'Nobeans',
 ];
 
 export const serverIcons = [
-	'https://i.imgur.com/cnXmGUG.png',
-	'https://i.imgur.com/G4m7UcI.png',
-	'https://i.imgur.com/j2snXBG.png',
-	'https://i.imgur.com/eSnj5kh.png',
-	'https://media.discordapp.net/attachments/882892373523324958/959242994815471616/FakePing.png',
+	'https://i.imgur.com/m6QuWcx.png',
+	'https://i.imgur.com/TTJb3JP.png',
+	'https://i.imgur.com/xGTlMjj.png',
+	'https://i.imgur.com/4dCi1BM.png',
+	'https://i.imgur.com/4A1ug6l.png',
 ];
 
 export const serverBanners = [
@@ -41,6 +47,7 @@ export const serverBanners = [
 	'https://i.imgur.com/S1w0DUd.png',
 	'https://i.imgur.com/zjDpo0K.jpeg',
 	'https://i.imgur.com/BYxBci8.png',
+	'https://i.imgur.com/vtuWrMh.png',
 ];
 
 export const banWords = ['hello', 'welcome', 'help', 'what', 'starfish', 'are', 'todo', 'manga', 'mha', 'memes'];
@@ -61,12 +68,65 @@ export const timeoutMemberMessages = [
 	'Call an ambulance {{ user }}, but not for me!',
 ];
 
+export const genshinImpactNames = [
+	'Albedo',
+	'Alhaitham',
+	'Ayato',
+	'Ayaka',
+	'Amber',
+	'Arataki Itto',
+	'Beidou',
+	'Bennett',
+	'Collei',
+	'Cyno',
+	'Diluc',
+	'Diona',
+	'Eula',
+	'Faruzan',
+	'Fischl',
+	'Ganyu',
+	'Gorou',
+	'Hu Tao',
+	'Jean',
+	'Kazuha',
+	'Kaeya',
+	'Keqing',
+	'Klee',
+	'Kujou Sara',
+	'Kuki Shinobu',
+	'Mona',
+	'Nahida',
+	'Ningguang',
+	'Noelle',
+	'Qiqi',
+	'Raiden Shogun',
+	'Razor',
+	'Kokomi',
+	'Shenhe',
+	'Sucrose',
+	'Tartaglia/Childe',
+	'Thoma',
+	'Tighnari',
+	'Lumine',
+	'Venti',
+	'Wanderer/Scaramouche',
+	'Xiao',
+	'Yae Miko',
+	'Yelan',
+	'Yoimiya',
+	'Yun Jin',
+	'Baizhu',
+	'Dainsleif',
+	'Kaveh',
+	'Heizou',
+];
+
 export enum DecreeName {
 	AllLowercase = 'ALL_LOWERCASE',
 	AllUppercase = 'ALL_UPPERCASE',
 	BanRandomLetter = 'BAN_RANDOM_LETTER',
 	BanRandomWord = 'BAN_SPECIFIC_WORDS',
-	KickLastSpeak = 'KICK_LAST_SPEAK',
+	GenshinImpactStansAssemble = 'GENSHIN_IMPACT_STANS_ASSEMBLE',
 	MustContainEmoji = 'MUST_CONTAIN_EMOJI',
 	MustContainWord = 'MUST_CONTAIN_WORD',
 	PingRole = 'PING_ROLE',

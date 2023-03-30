@@ -18,12 +18,14 @@ import {
 	DecreeRarity,
 	randomEmoji,
 	GameModifiableDataName,
+	genshinImpactNames,
 } from './constants';
 import {
 	allLowercaseListener,
 	allUppercaseListener,
 	bannedLetterListener,
 	bannedWordListener,
+	genshinImpactStansAssembleListener,
 	mustContainEmojiListener,
 	mustContainWordListener,
 } from './decree-listeners';
@@ -200,13 +202,14 @@ export const decrees: Decree[] = [
 		rarity: DecreeRarity.Legendary,
 		execute: async (chatChannel, interaction) => {
 			const newBannedLetter = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+			const listener = (message: Message) => bannedLetterListener(message, newBannedLetter);
 
-			client.on(Events.MessageCreate, (message) => bannedLetterListener(message, newBannedLetter));
+			client.on(Events.MessageCreate, listener);
 			await KingsDecree.getDecreeChannel().send(
 				`The king has decreed that the letter \`${newBannedLetter}\` is now banned.`,
 			);
 			return setTimeout(() => {
-				client.removeListener(Events.MessageCreate, bannedLetterListener);
+				client.removeListener(Events.MessageCreate, listener);
 			}, KingsDecree.rotationTime as number);
 		},
 	},
@@ -216,13 +219,14 @@ export const decrees: Decree[] = [
 		rarity: DecreeRarity.Epic,
 		execute: async (chatChannel, interaction) => {
 			const newBannedWord = randomElement(banWords);
+			const listener = (message: Message) => bannedWordListener(message, newBannedWord);
 
-			client.on(Events.MessageCreate, (message: Message) => bannedWordListener(message, newBannedWord));
+			client.on(Events.MessageCreate, listener);
 			await KingsDecree.getDecreeChannel().send(
 				`The king has decreed that the word \`${newBannedWord}\` is now banned.`,
 			);
 			return setTimeout(() => {
-				client.removeListener(Events.MessageCreate, bannedWordListener);
+				client.removeListener(Events.MessageCreate, listener);
 			}, KingsDecree.rotationTime as number);
 		},
 	},
@@ -232,13 +236,14 @@ export const decrees: Decree[] = [
 		rarity: DecreeRarity.Rare,
 		execute: async (chatChannel, interaction) => {
 			const newMustContainWord = randomElement(mustContainWords);
+			const listener = (message: Message) => mustContainWordListener(message, newMustContainWord);
 
-			client.on(Events.MessageCreate, (message: Message) => mustContainWordListener(message, newMustContainWord));
+			client.on(Events.MessageCreate, listener);
 			await KingsDecree.getDecreeChannel().send(
 				`The king has decreed that the word \`${newMustContainWord}\` is required to be in every message.`,
 			);
 			return setTimeout(() => {
-				client.removeListener(Events.MessageCreate, mustContainWordListener);
+				client.removeListener(Events.MessageCreate, listener);
 			}, KingsDecree.rotationTime as number);
 		},
 	},
@@ -248,13 +253,14 @@ export const decrees: Decree[] = [
 		rarity: DecreeRarity.Rare,
 		execute: async (chatChannel, interaction) => {
 			const newMustContainEmoji = randomEmoji(interaction.guild!);
+			const listener = (message: Message) => mustContainEmojiListener(message, newMustContainEmoji);
 
-			client.on(Events.MessageCreate, (message: Message) => mustContainEmojiListener(message, newMustContainEmoji));
+			client.on(Events.MessageCreate, listener);
 			await KingsDecree.getDecreeChannel().send(
 				`The king has decreed that the emoji \`${newMustContainEmoji}\` is required to be in every message.`,
 			);
 			return setTimeout(() => {
-				client.removeListener(Events.MessageCreate, mustContainEmojiListener);
+				client.removeListener(Events.MessageCreate, listener);
 			}, KingsDecree.rotationTime as number);
 		},
 	},
@@ -335,34 +341,6 @@ export const decrees: Decree[] = [
 		},
 	},
 	{
-		name: DecreeName.KickLastSpeak,
-		description: 'Kick the last person to speak',
-		rarity: DecreeRarity.Epic,
-		execute: async (chatChannel, interaction) => {
-			const messages = await chatChannel.messages.fetch({ limit: 50 });
-			const users = Array.from(new Set(messages.map((x) => x.author.id)));
-			const targetMember = await chatChannel.guild!.members.fetch(randomElement(users)).catch(() => null);
-			if (!targetMember) {
-				return KingsDecree.getDecreeChannel().send(
-					'Oh no! The last person to speak has left before I could kick them, so sad!',
-				);
-			}
-
-			try {
-				await targetMember.kick();
-			} catch (error) {
-				await interaction.reply({
-					ephemeral: true,
-					content: `Unable to kick last person to speak. Please forward this to staff ${error}`,
-				});
-				return logger.error(`There was an error kicking ${targetMember.user.id} (${targetMember.user.tag}). ${error}`);
-			}
-
-			logger.info(`Successfully kicked ${targetMember.user.id} (${targetMember.user.tag})`);
-			return KingsDecree.getDecreeChannel().send(`The king has decreed that ${targetMember} shall be **kicked**.`);
-		},
-	},
-	{
 		name: DecreeName.AllLowercase,
 		description: 'All messages must be in lowercase',
 		rarity: DecreeRarity.Rare,
@@ -383,6 +361,25 @@ export const decrees: Decree[] = [
 			await KingsDecree.getDecreeChannel().send('The king has decreed that all messages must be in uppercase.');
 			return setTimeout(() => {
 				client.removeListener(Events.MessageCreate, allUppercaseListener);
+			}, KingsDecree.rotationTime as number);
+		},
+	},
+	{
+		name: DecreeName.GenshinImpactStansAssemble,
+		description:
+			'A random Genshin Impact character will be chosen, then every user sends a message will be renamed to that character and every message has to contain that name',
+		rarity: DecreeRarity.Legendary,
+		execute: async (chatChannel, interaction) => {
+			const randomCharacter = randomElement(genshinImpactNames);
+			const randomCharacterName = randomCharacter;
+			const listener = (message: Message) => genshinImpactStansAssembleListener(message, randomCharacterName);
+
+			client.on(Events.MessageCreate, listener);
+			await KingsDecree.getDecreeChannel().send(
+				`The king has decreed that every message must contain the name of the character ${randomCharacterName} and every user who sends a message will be renamed to ${randomCharacterName}`,
+			);
+			return setTimeout(() => {
+				client.removeListener(Events.MessageCreate, listener);
 			}, KingsDecree.rotationTime as number);
 		},
 	},
