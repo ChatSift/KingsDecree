@@ -257,7 +257,7 @@ export const decrees: Decree[] = [
 
 			client.on(Events.MessageCreate, listener);
 			await KingsDecree.getDecreeChannel().send(
-				`The king has decreed that the emoji \`${newMustContainEmoji}\` is required to be in every message.`,
+				`The king has decreed that the emoji ${newMustContainEmoji} is required to be in every message.`,
 			);
 			return setTimeout(() => {
 				client.removeListener(Events.MessageCreate, listener);
@@ -367,7 +367,7 @@ export const decrees: Decree[] = [
 	{
 		name: DecreeName.GenshinImpactStansAssemble,
 		description:
-			'A random Genshin Impact character will be chosen, then every user sends a message will be renamed to that character and every message has to contain that name',
+			'Users will be renamed to a random character from Genshin Impact and messages must contain the name',
 		rarity: DecreeRarity.Legendary,
 		execute: async (chatChannel, interaction) => {
 			const randomCharacter = randomElement(genshinImpactNames);

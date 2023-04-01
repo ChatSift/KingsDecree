@@ -54,7 +54,7 @@ export const banWords = ['hello', 'welcome', 'help', 'what', 'starfish', 'are', 
 
 export const mustContainWords = ['potato', 'quarantine', 'sano', 'alien', 'kaboom'];
 
-export const randomEmoji = (guild: Guild) => guild.emojis.cache.random()!.toString();
+export const randomEmoji = (guild: Guild) => guild.emojis.cache.filter(em => !em.animated).random()!.toString();
 
 export const memes = [
 	'Never going give {{ role }} up, never gonna let you down',

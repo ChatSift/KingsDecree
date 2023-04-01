@@ -39,6 +39,10 @@ export const messageCreate = async (message: Message) => {
 			}
 
 			clearInterval(KingsDecree.interval);
+			// set all KingsDecree values to default
+			KingsDecree.interval = null;
+			KingsDecree.rotationTime = null;
+			KingsDecree.king = null;
 
 			await message.reply('Alright boss. Will stop rotating kings.');
 			break;
@@ -82,6 +86,7 @@ export const messageCreate = async (message: Message) => {
 				clearInterval(KingsDecree.interval);
 			}
 
+			KingsDecree.king = null;
 			KingsDecree.interval = setInterval(async () => KingsDecree.runDecreer(), time * 1_000 * 60);
 			KingsDecree.rotationTime = time * 1_000 * 60;
 			break;

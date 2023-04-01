@@ -75,6 +75,6 @@ export const interactionCreate = async (interaction: Interaction) => {
 				(error as Error).message
 			}\`. In the meantime, choose another one.`,
 			ephemeral: true,
-		});
+		}).catch(async () => interaction.channel?.send(`There was an error running your decree. Please forward this error to the staff: \`${(error as Error).message}\`. In the meantime, choose another one.`));
 	}
 };

@@ -41,6 +41,8 @@ export class KingsDecree {
 			const users = Array.from(new Set(messages.filter((x) => !x.author.bot).map((x) => x.author.id)));
 
 			while (newKing === null || newKing?.id === KingsDecree.king?.id) {
+			// // todo: use above line instead once testing is done
+			// while (newKing === null) {
 				// eslint-disable-next-line no-param-reassign
 				newKing = await KingsDecree.getGuild()
 					.members.fetch(randomElement(users))
