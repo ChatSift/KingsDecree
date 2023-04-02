@@ -141,6 +141,7 @@ export enum DecreeName {
 	GenshinImpactStansAssemble = 'GENSHIN_IMPACT_STANS_ASSEMBLE',
 	MustContainEmoji = 'MUST_CONTAIN_EMOJI',
 	MustContainWord = 'MUST_CONTAIN_WORD',
+	MustPingUser = 'MUST_PING_USER',
 	PingRole = 'PING_ROLE',
 	RandomBanner = 'RANDOM_BANNER',
 	RandomIcon = 'RANDOM_ICON',
@@ -148,7 +149,7 @@ export enum DecreeName {
 	SlowmodeChannel = 'SLOWMODE_CHANNEL',
 	TimeoutLastSpeak = 'TIMEOUT_LAST_SPEAK',
 	TimeoutRandomUser = 'TIMEOUT_RANDOM_USER',
-	ToggleImages = 'TOGGLE_IMAGES',
+	ToggleImages = 'TOGGLE_IMAGES'
 }
 
 export enum DecreeRarity {

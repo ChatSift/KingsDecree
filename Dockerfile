@@ -16,4 +16,6 @@ COPY src ./src
 
 RUN yarn build
 
-RUN yarn start
+COPY .env ./
+
+CMD ["yarn", "start"]

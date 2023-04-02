@@ -1,6 +1,6 @@
 /* eslint-disable promise/prefer-await-to-then */
 import { env } from 'node:process';
-import type { Message } from 'discord.js';
+import type { Message, Snowflake } from 'discord.js';
 
 export const bannedLetterListener = (message: Message, newBannedLetter: string) => {
 	if (message.author.bot || message.channel.id !== env.CHAT_CHANNEL) {
@@ -71,7 +71,17 @@ export const genshinImpactStansAssembleListener = (message: Message, randomChara
 		message.member?.setNickname(randomCharacterName).catch(() => {});
 	}
 
-	if (!message.content.toLowerCase().includes(randomCharacterName)) {
+	if (!message.content.toLowerCase().includes(randomCharacterName.toLowerCase())) {
 		message.delete().catch(() => {});
 	}
 };
+
+export const mustIncludeUserMentionListener = (message: Message, userId: Snowflake) => {
+	if (message.author.bot || message.channel.id !== env.CHAT_CHANNEL) {
+		return;
+	}
+
+	if (!message.mentions.users.has(userId)) {
+		message.delete().catch(() => {});
+	}
+}

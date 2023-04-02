@@ -28,6 +28,7 @@ import {
 	genshinImpactStansAssembleListener,
 	mustContainEmojiListener,
 	mustContainWordListener,
+	mustIncludeUserMentionListener,
 } from './decree-listeners';
 import { randomElement } from './util';
 import { logger, client } from '.';
@@ -383,4 +384,33 @@ export const decrees: Decree[] = [
 			}, KingsDecree.rotationTime as number);
 		},
 	},
+	{
+		name: DecreeName.MustPingUser,
+		description: 'Every message must ping a random user',
+		rarity: DecreeRarity.Rare,
+		execute: async (chatChannel, interaction) => {
+			const messages = await chatChannel.messages.fetch({ limit: 50 });
+			const users = Array.from(new Set(messages.map((x) => x.author.id)));
+			let targetMember: GuildMember | null = null;
+			while (targetMember === null) {
+				// eslint-disable-next-line require-atomic-updates
+				targetMember = await chatChannel.guild!.members.fetch(randomElement(users)).catch(() => null);
+				if (targetMember) {
+					logger.info(`timeout random user target is now ${targetMember.user.tag} (${targetMember.user.id})`);
+				} else {
+					logger.info(`Timeout random user target could not be fetched, retrying...`);
+				}
+			}
+
+			const listener = (message: Message) => mustIncludeUserMentionListener(message, targetMember!.id);
+
+			client.on(Events.MessageCreate, listener);
+			await KingsDecree.getDecreeChannel().send(
+				`All messages must now ping ${targetMember}`,
+			);
+			return setTimeout(() => {
+				client.removeListener(Events.MessageCreate, listener);
+			}, KingsDecree.rotationTime as number);
+		}
+	}
 ];
