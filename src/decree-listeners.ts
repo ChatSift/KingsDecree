@@ -1,0 +1,87 @@
+/* eslint-disable promise/prefer-await-to-then */
+import { env } from 'node:process';
+import type { Message, Snowflake } from 'discord.js';
+
+export const bannedLetterListener = (message: Message, newBannedLetter: string) => {
+	if (message.author.bot || message.channel.id !== env.CHAT_CHANNEL) {
+		return;
+	}
+
+	if (message.content.toLowerCase().includes(newBannedLetter)) {
+		message.delete().catch(() => {});
+	}
+};
+
+export const bannedWordListener = (message: Message, newBannedWord: string) => {
+	if (message.author.bot || message.channel.id !== env.CHAT_CHANNEL) {
+		return;
+	}
+
+	if (message.content.toLowerCase().includes(newBannedWord)) {
+		message.delete().catch(() => {});
+	}
+};
+
+export const mustContainWordListener = (message: Message, newMustContainWord: string) => {
+	if (message.author.bot || message.channel.id !== env.CHAT_CHANNEL) {
+		return;
+	}
+
+	if (!message.content.toLowerCase().includes(newMustContainWord)) {
+		message.delete().catch(() => {});
+	}
+};
+
+export const allLowercaseListener = (message: Message) => {
+	if (message.author.bot) {
+		return;
+	}
+
+	if (message.content.toLowerCase() !== message.content) {
+		message.delete().catch(() => {});
+	}
+};
+
+export const allUppercaseListener = (message: Message) => {
+	if (message.author.bot) {
+		return;
+	}
+
+	if (message.content.toUpperCase() !== message.content) {
+		message.delete().catch(() => {});
+	}
+};
+
+export const mustContainEmojiListener = (message: Message, newMustContainEmoji: string) => {
+	if (message.author.bot || message.channel.id !== env.CHAT_CHANNEL) {
+		return;
+	}
+
+	if (!message.content.includes(newMustContainEmoji)) {
+		message.delete().catch(() => {});
+	}
+};
+
+export const genshinImpactStansAssembleListener = (message: Message, randomCharacterName: string) => {
+	if (message.author.bot || message.channel.id !== env.CHAT_CHANNEL) {
+		return;
+	}
+
+	if (message.member?.nickname !== randomCharacterName) {
+		message.member?.setNickname(randomCharacterName).catch(() => {});
+	}
+
+	if (!message.content.toLowerCase().includes(randomCharacterName.toLowerCase())) {
+		message.delete().catch(() => {});
+	}
+};
+
+export const mustIncludeUserMentionListener = (message: Message, userId: Snowflake) => {
+	if (message.author.bot || message.channel.id !== env.CHAT_CHANNEL) {
+		return;
+	}
+
+	if (!message.mentions.users.has(userId)) {
+		message.delete().catch(() => {});
+	}
+}

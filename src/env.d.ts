@@ -1,11 +1,11 @@
 declare namespace NodeJS {
-    export interface ProcessEnv {
-        DISCORD_TOKEN: string;
-        PREFIX: string;
-        CHAT_CHANNEL: string;
-        GUILD_ID: string;
-        DECREE_CHANNEL: string;
-        STAFF_ROLE: string;
-        EVENT_ROLE: string;
-    }
+	export type ProcessEnv = {
+		CHAT_CHANNEL: string;
+		DECREE_CHANNEL: string;
+		DISCORD_TOKEN: string;
+		EVENT_ROLE: string;
+		GUILD_ID: string;
+		PREFIX: string;
+		STAFF_ROLE: string;
+	};
 }

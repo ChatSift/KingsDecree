@@ -1,19 +1,19 @@
-node_modules/
-dist/
-types/
-coverage/
-.nyc_output/
-data/
-volumes/
-worker/
-min/
+node_modules
+.env
 
-.npmrc
-*.tsbuildinfo
+coverage/*
+dist
+
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+logs
 *.log
 
-.vscode/
-.idea/
-*.env
-docs/
-*.log
+.turbo
+
+tsconfig.tsbuildinfo

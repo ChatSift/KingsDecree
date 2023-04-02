@@ -1,27 +1,55 @@
 {
-    "name": "tommy-thing-2",
+    "name": "@chatsift/kingsdecree",
+    "packageManager": "yarn@3.2.1",
     "version": "1.0.0",
-    "main": "index.js",
+    "main": "./dist/index.js",
+    "type": "module",
     "license": "MIT",
     "scripts": {
-        "prettier": "npx prettier --write **/*.{ts,js,json,yml,yaml,md}",
-        "build": "npx tsc",
-        "dev": "npx nodemon",
-        "prod": "yarn build && pm2 start ./dist/index.js --name king"
+        "lint": "eslint src --ext .ts",
+        "build": "tsc",
+        "dev-build": "tsc --watch",
+        "format": "prettier --write src/*.{ts,json}",
+        "start": "dotenv -e .env -- node --es-module-specifier-resolution=node --enable-source-maps ./dist/index.js",
+        "prepare": "is-ci || husky install",
+        "update": "yarn upgrade-interactive"
     },
     "dependencies": {
-        "@discordjs/builders": "0.13.0-dev.1648515278-ac4bc3a",
-        "@discordjs/rest": "^0.3.0",
         "common-tags": "^1.8.2",
-        "discord.js": "^13.6.0",
-        "dotenv": "^16.0.0",
-        "winston": "^3.6.0"
+        "discord.js": "^14.8.0",
+        "dotenv": "^16.0.3",
+        "undici": "^5.21.0",
+        "winston": "^3.8.2"
     },
     "devDependencies": {
+        "@commitlint/cli": "^17.5.0",
+        "@commitlint/config-angular": "^17.4.4",
         "@types/common-tags": "^1.8.1",
-        "nodemon": "^2.0.15",
-        "prettier": "^2.6.1",
-        "ts-node": "^10.7.0",
-        "typescript": "^4.6.3"
+        "@types/node": "^18.15.10",
+        "@typescript-eslint/eslint-plugin": "^5.57.0",
+        "@typescript-eslint/parser": "^5.57.0",
+        "dotenv-cli": "^7.1.0",
+        "eslint": "^8.36.0",
+        "eslint-config-neon": "^0.1.41",
+        "eslint-plugin-typescript-sort-keys": "^2.3.0",
+        "husky": "^8.0.3",
+        "is-ci": "^3.0.1",
+        "prettier": "^2.8.7",
+        "prettier-eslint": "^15.0.1",
+        "rimraf": "^4.4.1",
+        "typescript": "^4.9.5"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
+    "lint-staged": {
+        "*.ts": [
+            "eslint --fix"
+        ],
+        "*.tsx": [
+            "eslint --fix"
+        ]
     }
 }
