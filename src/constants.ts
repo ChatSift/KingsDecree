@@ -53,7 +53,7 @@ export const memes = [
 	'Did you see the news about Ken being added to Fortnite {{ role }}? Sublime!',
 	'Hey {{ role }}! In three weeks the next Cars movie is going to debut featuring Ken racing Lightning McQueen!',
 	'{{ role }} Did you know Jyk has spent over $3000 on Barbie figures?',
-	'{{ role }} Every night is girls' night.'
+	'{{ role }} Every night is girls night.'
 ];
 
 export const timeoutMemberMessages = [
